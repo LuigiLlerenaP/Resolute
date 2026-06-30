@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Resolute.Tests/Resolute.Tests.csproj" />
+  <Project Path="Resolute/Resolute.csproj" />
+</Solution>
