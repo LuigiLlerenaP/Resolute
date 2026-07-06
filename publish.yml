@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch: {}
 
 jobs:
   publish:
@@ -34,5 +35,14 @@ jobs:
       - name: Pack
         run: dotnet pack Resolute/Resolute.csproj -c Release --no-build --output ./nupkgs
 
+      - name: Check NuGet API key secret
+        run: |
+          if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
+            echo "ERROR: NUGET_API_KEY secret is empty or not set." >&2
+            exit 1
+          else
+            echo "NUGET_API_KEY secret is present."
+          fi
+
       - name: Push to NuGet.org
-        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --verbosity detailed
