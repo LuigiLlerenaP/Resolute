@@ -1,18 +1,21 @@
-name: publish
+name: Publish
 
 on:
   push:
     tags:
-      - 'v*'
-  workflow_dispatch: {}
+      - "v*"
+  workflow_dispatch:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
       contents: read
+      id-token: write
+
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
     steps:
       - name: Checkout
@@ -21,7 +24,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: "10.0.x"
 
       - name: Restore
         run: dotnet restore
@@ -35,14 +38,24 @@ jobs:
       - name: Pack
         run: dotnet pack Resolute/Resolute.csproj -c Release --no-build --output ./nupkgs
 
-      - name: Check NuGet API key secret
+      - name: Verify NuGet API Key
+        shell: bash
         run: |
-          if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
-            echo "ERROR: NUGET_API_KEY secret is empty or not set." >&2
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "ERROR: NUGET_API_KEY is empty."
             exit 1
-          else
-            echo "NUGET_API_KEY secret is present."
           fi
 
+          echo "NUGET_API_KEY found."
+          echo "Length: ${#NUGET_API_KEY}"
+
+      - name: List generated packages
+        run: ls -lah ./nupkgs
+
       - name: Push to NuGet.org
-        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --verbosity detailed
+        run: |
+          dotnet nuget push "./nupkgs/*.nupkg" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --api-key "$NUGET_API_KEY" \
+            --skip-duplicate \
+            --verbosity detailed
