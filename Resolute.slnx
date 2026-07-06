@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path="publish.yml" />
+  </Folder>
   <Project Path="Resolute.Tests/Resolute.Tests.csproj" />
   <Project Path="Resolute/Resolute.csproj" />
 </Solution>
