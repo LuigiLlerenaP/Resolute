@@ -1,4 +1,6 @@
-﻿namespace Resolute.Failures
+﻿using Resolute.Common.Problems;
+
+namespace Resolute.Failures
 {
     /// <summary>
     /// Representa un fallo que contiene múltiples fallos individuales.
@@ -6,7 +8,7 @@
     /// <param name="faults">La lista de fallos individuales que componen este fallo aggregate.</param>
     public sealed class AggregateFault(IReadOnlyList<Fault> faults) : Fault(
             code: "Fault.Aggregate",
-            message: $"{faults.Count} fault(s): {BuildSummary(faults)}")
+            message: BuildSummary(faults))
 
     {
         /// <summary>
@@ -23,20 +25,28 @@
             => new(faults.SelectMany(Flatten).ToList().AsReadOnly());
 
         /// <summary>
-        /// Devuelve una representación en cadena del <see cref="AggregateFault"/>, incluyendo su código y los códigos de los fallos individuales.
+        /// Devuelve una representación legible del <see cref="AggregateFault"/>.
+        /// Incluye el código agregado, la cantidad de fallos y los códigos individuales.
         /// </summary>
-        /// <returns>Un string que representa el fallo aggregate.</returns>
+        /// <returns>
+        /// Formato: <c>[Fault.Aggregate] 2 fault(s) → E1, E2</c>
+        /// </returns>
         public override string ToString()
-            => $"[{Code}] | {Faults.Count} fault(s): {string.Join(", ", Faults.Select(f => f.Code))}";
+            => $"[{Code}] {Faults.Count} fault(s) → {string.Join(", ", Faults.Select(f => f.Code))}";
 
         /// <summary>
-        /// Construye un resumen de los códigos de los fallos individuales en una cadena separada por comas.
+        /// Construye el resumen de códigos que se embebe en el <see cref="Fault.Message"/> base.
+        /// Se evalúa en el constructor antes de que <see cref="Faults"/> esté disponible,
+        /// por eso recibe la lista como parámetro en lugar de usar la propiedad.
         /// </summary>
-        /// <param name="faults">La lista de fallos individuales que componen este fallo aggregate.</param>
-        /// <returns>Un string que resume los códigos de los fallos individuales.</returns>
+        /// <param name="faults">Lista de fallos a resumir.</param>
+        /// <returns>
+        /// Formato: <c>E1, E2, E3</c>
+        /// </returns>
         private static string BuildSummary(IReadOnlyList<Fault> faults)
-           => string.Join(", ", faults.Select(f => f.Code));
-       
+            => string.Join(", ", faults.Select(f => f.Code));
+
+
         /// <summary>
         /// Aplana un <see cref="Fault"/> en sus componentes individuales.
         /// Si el fault es un <see cref="AggregateFault"/>, devuelve su lista interna de faults.

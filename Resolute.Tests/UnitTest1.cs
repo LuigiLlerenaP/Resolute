@@ -73,8 +73,8 @@ namespace Resolute.Tests
 
             string result = aggregateFault.ToString();
 
-            Assert.Contains("E1", result);
-            Assert.Contains("E2", result);
+            Assert.Contains("Invalid", result);
+            Assert.Contains("Required", result);
         }
 
         [Fact]
