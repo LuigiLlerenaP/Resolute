@@ -17,4 +17,4 @@ Building and packing locally
 
 Repository
 
-https://github.com/LuigiLlerenaP/Resolute
+ - https://github.com/LuigiLlerenaP/Resolute
