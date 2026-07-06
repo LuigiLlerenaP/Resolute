@@ -1,5 +1,5 @@
 ﻿using Resolute.Common.ProblemsConst;
-using Resolute.Faults;
+using Resolute.Failures;
 
 namespace Resolute.Common.Problems
 {

@@ -6,4 +6,28 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<PackageId>Resolute</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Luigi Llerena</Authors>
+		<Company>LlerenaL</Company>
+		<Description>Lightweight library for modelling Result and Fault types.</Description>
+		<PackageTags>result;fault;errors;functional;failure;railway</PackageTags>
+		<RepositoryUrl>https://github.com/LuigiLlerenaP/Resolute</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Include="README.md"    Pack="true" PackagePath="" />
+		<None Include="LICENSE"      Pack="true" PackagePath="" />
+		<None Include="CHANGELOG.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
 </Project>

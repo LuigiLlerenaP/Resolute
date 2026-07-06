@@ -1,5 +1,4 @@
-﻿using Resolute.Failure;
-using Resolute.Faults;
+﻿using Resolute.Failures;
 
 namespace Resolute.Results
 {
@@ -82,7 +81,7 @@ namespace Resolute.Results
         public static implicit operator Result<T>(T value) => Success(value);
 
         /// <summary>
-        /// Conversión implícita: permite retornar un <see cref="Error"/> directamente donde
+        /// Conversión implícita: permite retornar un <see cref="Fault"/> directamente donde
         /// se espera un <see cref="Result{T}"/>, envolviéndolo como fallo.
         /// </summary>
         public static implicit operator Result<T>(Fault fault) => Failure(fault);

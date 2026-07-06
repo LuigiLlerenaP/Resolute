@@ -1,4 +1,4 @@
-﻿using Resolute.Faults;
+﻿using Resolute.Failures;
 
 namespace Resolute.Results
 {
@@ -156,8 +156,11 @@ namespace Resolute.Results
                     continue;
                 }
 
-                values ??= new List<T>(results.Length);
-                values.Add(result.Value!);
+                if (faults is null)
+                {
+                    values ??= new List<T>(results.Length);
+                    values.Add(result.Value!);
+                }
             }
 
             if (faults is not null)

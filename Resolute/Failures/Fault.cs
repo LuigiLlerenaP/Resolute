@@ -1,7 +1,6 @@
 ﻿using Resolute.Contracts;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Resolute.Faults
+namespace Resolute.Failures
 {
     /// <summary>
     /// Representa la falla controlada de una operación.

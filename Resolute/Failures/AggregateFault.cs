@@ -1,4 +1,4 @@
-﻿namespace Resolute.Faults
+﻿namespace Resolute.Failures
 {
     /// <summary>
     /// Representa un fallo que contiene múltiples fallos individuales.
@@ -27,7 +27,7 @@
         /// </summary>
         /// <returns>Un string que representa el fallo aggregate.</returns>
         public override string ToString()
-            => $"[{Code}] {string.Join(", ", Faults.Select(f => f.Code))}";
+            => $"[{Code}] | {Faults.Count} fault(s): {string.Join(", ", Faults.Select(f => f.Code))}";
 
         /// <summary>
         /// Construye un resumen de los códigos de los fallos individuales en una cadena separada por comas.
