@@ -38,8 +38,6 @@ namespace Resolute.Common.Problems
         public static HttpFault UnprocessableEntity(string code)
             => new(CodesErrors.UnprocessableEntity, code, MessagesErrors.UnprocessableEntity);
 
-        // ── 5xx Server Errors ─────────────────────────────────────────────────────
-
         /// <summary>500 — error inesperado del servidor.</summary>
         public static HttpFault InternalServerError(string code)
             => new(CodesErrors.InternalServerError, code, MessagesErrors.InternalServerError);
