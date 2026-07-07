@@ -60,3 +60,4 @@ jobs:
             --api-key "$NUGET_API_KEY" \
             --skip-duplicate \
             --verbosity detailed
+
