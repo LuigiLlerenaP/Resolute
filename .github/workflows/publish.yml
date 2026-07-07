@@ -1,22 +1,17 @@
 name: Publish
-
 on:
   push:
     tags:
       - "v*" # Se ejecutará con cualquier tag que empiece con "v" (ej: v1.0.0, v2.1)
   workflow_dispatch:
-
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       id-token: write
-
     env:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,7 +40,6 @@ jobs:
             echo "ERROR: NUGET_API_KEY is empty."
             exit 1
           fi
-
           echo "NUGET_API_KEY found."
           echo "Length: ${#NUGET_API_KEY}"
 
@@ -58,6 +52,4 @@ jobs:
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
             --api-key "$NUGET_API_KEY" \
-            --skip-duplicate \
-            --verbosity detailed
-
+            --skip-duplicate
