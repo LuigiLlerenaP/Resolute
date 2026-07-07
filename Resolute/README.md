@@ -4,7 +4,7 @@ Resolute is a small .NET library for modelling Result and Fault types to simplif
 
 Installation (after publishing):
 
-	dotnet add package Resolute --version 1.0.0
+	dotnet add package Resolute.Net --version 1.0.0
 
 Quick usage
 
