@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write   # necesario para que GitHub emita el token OIDC
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,20 +32,23 @@ jobs:
       - name: Pack
         run: dotnet pack Resolute/Resolute.csproj -c Release --no-build --output ./nupkgs
 
+      - name: Verify NuGet API Key
+        shell: bash
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "ERROR: NUGET_API_KEY is empty."
+            exit 1
+          fi
+          echo "NUGET_API_KEY found."
+          echo "Length: ${#NUGET_API_KEY}"
+
       - name: List generated packages
         run: ls -lah ./nupkgs
-
-      # Obtiene una API key temporal (válida 1 hora) vía OIDC
-      - name: NuGet login (OIDC → temp API key)
-        uses: NuGet/login@v1
-        id: login
-        with:
-          user: LlerenaL   # tu username de nuget.org (el perfil, no el email)
 
       - name: Push to NuGet.org
         shell: bash
         run: |
           dotnet nuget push "./nupkgs/*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+            --api-key "$NUGET_API_KEY" \
             --skip-duplicate
