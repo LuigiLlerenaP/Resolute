@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Resolute\Lllp.Resolute.csproj" />
+    <ProjectReference Include="..\Resolute\Resolute.csproj" />
   </ItemGroup>
 
   <ItemGroup>
