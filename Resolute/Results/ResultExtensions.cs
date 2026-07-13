@@ -143,7 +143,12 @@ namespace Resolute.Results
         /// </returns>
         public static Result<IReadOnlyList<T>> Combine<T>(this IEnumerable<Result<T>> resultSource)
         {
+            ArgumentNullException.ThrowIfNull(resultSource);
+
             Result<T>[] results = resultSource as Result<T>[] ?? [.. resultSource];
+            
+            if (results.Length == 0) { return Array.Empty<T>(); }
+            
             List<Fault>? faults = null;
             List<T>? values = null;
 

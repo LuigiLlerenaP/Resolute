@@ -1,4 +1,5 @@
 ﻿using Resolute.Common.Problems;
+using Resolute.Contracts;
 
 namespace Resolute.Failures
 {
@@ -6,7 +7,7 @@ namespace Resolute.Failures
     /// Representa un fallo que contiene múltiples fallos individuales.
     /// </summary>
     /// <param name="faults">La lista de fallos individuales que componen este fallo aggregate.</param>
-    public sealed class AggregateFault(IReadOnlyList<Fault> faults) : Fault(
+    public sealed class AggregateFault(IReadOnlyList<IFault> faults) : Fault(
             code: "Fault.Aggregate",
             message: BuildSummary(faults))
 
@@ -14,7 +15,7 @@ namespace Resolute.Failures
         /// <summary>
         ///  Obtiene la lista de fallos individuales que componen este fallo aggregate.
         /// </summary>
-        public IReadOnlyList<Fault> Faults { get; } = faults;
+        public IReadOnlyList<IFault> Faults { get; } = faults;
 
         /// <summary>
         ///  Crea un <see cref="AggregateFault"/> a partir de una colección de <see cref="Fault"/>.
@@ -43,7 +44,7 @@ namespace Resolute.Failures
         /// <returns>
         /// Formato: <c>E1, E2, E3</c>
         /// </returns>
-        private static string BuildSummary(IReadOnlyList<Fault> faults)
+        private static string BuildSummary(IReadOnlyList<IFault> faults)
             => string.Join(", ", faults.Select(f => f.Code));
 
 
@@ -58,7 +59,7 @@ namespace Resolute.Failures
         /// Los faults individuales que componen <paramref name="fault"/>,
         /// o una colección de un solo elemento si ya era un <see cref="Fault"/> simple.
         /// </returns>
-        private static IEnumerable<Fault> Flatten(Fault fault)
+        private static IEnumerable<IFault> Flatten(IFault fault)
         {
             if (fault is AggregateFault af)
             {
