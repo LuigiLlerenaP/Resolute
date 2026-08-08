@@ -1,4 +1,5 @@
-﻿using Resolute.Failures;
+﻿using Resolute.Contracts;
+using Resolute.Failures;
 
 namespace Resolute.Results
 {
@@ -22,15 +23,15 @@ namespace Resolute.Results
         /// <summary>
         /// Error producido por la operación. Solo es no-nulo cuando <see cref="IsFailure"/> es true.
         /// </summary>
-        public Fault? Fault { get; }
+        public IFault? Fault { get; }
 
         /// <summary>
-        /// Constructor privado para crear una instancia de <see cref="Result{T}"/>. Se utiliza internamente por los métodos estáticos <see cref="Success(T)"/> y <see cref="Failure(Fault)"/>. 
+        /// Constructor privado para crear una instancia de <see cref="Result{T}"/>. Se utiliza internamente por los métodos estáticos <see cref="Success(T)"/> y <see cref="Failure(IFault)"/>. 
         /// </summary>
         /// <param name="isSuccess">Indica si la operación fue exitosa.</param>
         /// <param name="value">El valor producido por la operación.</param>
         /// <param name="fault">El error producido por la operación.</param>
-        private Result(bool isSuccess, T? value ,  Fault? fault = null) {
+        private Result(bool isSuccess, T? value ,  IFault? fault = null) {
             IsSuccess = isSuccess;
             Value = value;
             Fault = fault;  
@@ -61,7 +62,7 @@ namespace Resolute.Results
         /// <param name="fault">El error producido por la operación.</param>
         /// <returns></returns>
         /// <exception cref="InvalidResultException">Lanza una excepción si el error es nulo.</exception>
-        public static Result<T> Failure(Fault fault)
+        public static Result<T> Failure(IFault fault)
         {
             if (fault is null)
             {
@@ -93,7 +94,7 @@ namespace Resolute.Results
         /// <param name="onSuccess">La función para manejar el caso de éxito.</param>
         /// <param name="onFailure">La función para manejar el caso de fallo.</param>
         /// <returns></returns>
-        public TResult Match <TResult>(Func<T, TResult> onSuccess , Func<Fault, TResult> onFailure) 
+        public TResult Match <TResult>(Func<T, TResult> onSuccess , Func<IFault, TResult> onFailure) 
         {
             if (IsFailure)
             {

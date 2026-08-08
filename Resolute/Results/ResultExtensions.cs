@@ -1,4 +1,5 @@
-﻿using Resolute.Failures;
+﻿using Resolute.Contracts;
+using Resolute.Failures;
 
 namespace Resolute.Results
 {
@@ -26,7 +27,7 @@ namespace Resolute.Results
         /// El mismo <paramref name="result"/> si ya era fallo o si el predicado se cumple;
         /// un nuevo <see cref="Result{T}"/> fallido con <paramref name="fault"/> si el predicado falla.
         /// </returns>
-        public static Result<T> Ensure<T>(this Result<T> result, Func<T, bool> predicate, Fault fault)
+        public static Result<T> Ensure<T>(this Result<T> result, Func<T, bool> predicate, IFault fault)
         {
             if (result.IsFailure)
             {
@@ -35,7 +36,7 @@ namespace Resolute.Results
 
             if (!predicate(result.Value!))
             {
-                return fault;
+                return Result<T>.Failure(fault); ;
             }
 
             return result;
@@ -52,7 +53,7 @@ namespace Resolute.Results
         /// El mismo <paramref name="result"/> si ya era fallo o si el predicado se cumple;
         /// un nuevo <see cref="Result{T}"/> fallido con <paramref name="faultFactory"/> si el predicado falla.
         /// </returns>
-        public static Result<T> Ensure<T>(this Result<T> result, Func<T, bool> predicate, Func<T, Fault> faultFactory)
+        public static Result<T> Ensure<T>(this Result<T> result, Func<T, bool> predicate, Func<T, IFault> faultFactory)
         {
             if (result.IsFailure)
             {
@@ -61,7 +62,7 @@ namespace Resolute.Results
 
             if (!predicate(result.Value!))
             {
-                return faultFactory(result.Value!);
+                return Result<T>.Failure(faultFactory(result.Value!));
             }
 
             return result;
@@ -80,7 +81,7 @@ namespace Resolute.Results
         {
             if (result.IsFailure)
             {
-                return result.Fault!;
+                return Result<TOut>.Failure(result.Fault!);
             }
 
             return map(result.Value!);
@@ -105,7 +106,7 @@ namespace Resolute.Results
         {
             if (result.IsFailure)
             {
-                return result.Fault!;
+                return Result<TOut>.Failure(result.Fault!);
             }
 
             return bind(result.Value!);
@@ -146,17 +147,17 @@ namespace Resolute.Results
             ArgumentNullException.ThrowIfNull(resultSource);
 
             Result<T>[] results = resultSource as Result<T>[] ?? [.. resultSource];
-            
+
             if (results.Length == 0) { return Array.Empty<T>(); }
-            
-            List<Fault>? faults = null;
+
+            List<IFault>? faults = null;
             List<T>? values = null;
 
             foreach (Result<T> result in results)
             {
                 if (result.IsFailure)
                 {
-                    faults ??= new List<Fault>(results.Length);
+                    faults ??= new List<IFault>(results.Length);
                     faults.Add(result.Fault!);
                     continue;
                 }
@@ -169,11 +170,41 @@ namespace Resolute.Results
             }
 
             if (faults is not null)
-            {
-                return AggregateFault.From(faults);
-            }
+                return Result<IReadOnlyList<T>>.Failure(AggregateFault.From(faults));  
 
             return (values ?? []).AsReadOnly();
+        }
+
+        /// <summary>
+        /// Extrae el valor de un resultado exitoso, o acumula su fallo en una lista compartida.
+        /// </summary>
+        /// <remarks>
+        /// Pensado para mapers que combinan varias entidades/VOs y quieren recolectar
+        /// <em>todos</em> los fallos antes de cortar, en vez de detenerse en el primero:
+        /// <list type="bullet">
+        ///   <item>Si el resultado es exitoso → devuelve <see cref="Result{T}.Value"/>.</item>
+        ///   <item>Si el resultado es fallo → agrega el <see cref="IFault"/> a <paramref name="faults"/> y devuelve <see langword="null"/>.</item>
+        /// </list>
+        /// La lista <paramref name="faults"/> se modifica por referencia implícita (es un tipo referencia),
+        /// por lo que el llamador puede seguir usándola después de varias llamadas a <see cref="Track{T}"/>
+        /// para acumular los fallos de múltiples resultados antes de decidir si continuar o retornar un
+        /// <see cref="AggregateFault"/>.
+        /// </remarks>
+        /// <typeparam name="T">Tipo del valor contenido en el resultado. Debe ser un tipo referencia.</typeparam>
+        /// <param name="result">Resultado a evaluar.</param>
+        /// <param name="faults">Lista compartida donde se acumulan los fallos de fallos sucesivos.</param>
+        /// <returns>
+        /// El valor de <paramref name="result"/> si fue exitoso; <see langword="null"/> si fue fallo
+        /// (en cuyo caso su <see cref="IFault"/> ya quedó agregado a <paramref name="faults"/>).
+        /// </returns>
+        public static T? Track<T>(this Result<T> result, List<IFault> faults) where T : class
+        {
+            if (!result.IsSuccess)
+            {
+                faults.Add(result.Fault!);
+                return null;
+            }
+            return result.Value;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Resolute.Failures
         /// </summary>
         /// <param name="faults">La lista de fallos individuales que componen este fallo aggregate.</param>
         /// <returns> Retorna un nuevo <see cref="AggregateFault"/> con los fallos proporcionados. </returns>
-        public static AggregateFault From(IEnumerable<Fault> faults)
+        public static AggregateFault From(IEnumerable<IFault> faults)
             => new(faults.SelectMany(Flatten).ToList().AsReadOnly());
 
         /// <summary>
