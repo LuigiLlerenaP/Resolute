@@ -1,5 +1,4 @@
-﻿using Resolute.Common.Problems;
-using Resolute.Contracts;
+﻿using Resolute.Contracts;
 
 namespace Resolute.Failures
 {

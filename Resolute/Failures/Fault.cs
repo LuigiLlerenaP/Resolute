@@ -7,7 +7,7 @@ namespace Resolute.Failures
     /// </summary>
     /// <param name="code"> identificador técnico único de la falla</param>
     /// <param name="message">descripción legible</param>
-    public class Fault (string code, string message) : IFault, IEquatable<Fault> 
+    public class Fault(string code, string message) : IFault, IEquatable<Fault>
     {
         /// <summary>
         ///  Codgio de error único que identifica la falla. Se recomienda usar un formato de nombres jerárquico, como "Module.Submodule.ErrorType", para facilitar la categorización y búsqueda de errores.

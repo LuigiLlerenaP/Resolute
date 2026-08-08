@@ -84,8 +84,8 @@ namespace Resolute.Tests
             Result<int> result = Faults.Invalid(nameof(number), number);
 
             string outResultExcec = result.Match(   //DEVULVE EL RESULTADO DEL RESULT DE LA OPERACION  EN BASE AL RESULT
-                onSuccess: (v) => $"Value:{v}" ,
-                onFailure: (err) => $"Error: {err}" 
+                onSuccess: (v) => $"Value:{v}",
+                onFailure: (err) => $"Error: {err}"
             );
 
             Assert.Contains(nameof(number), outResultExcec);
@@ -123,7 +123,7 @@ namespace Resolute.Tests
 
             if (inputNumber < 0)
             {
-                return Faults.Invalid(nameof(inputNumber) , inputNumber);
+                return Faults.Invalid(nameof(inputNumber), inputNumber);
             }
 
             return inputNumber;
@@ -133,7 +133,7 @@ namespace Resolute.Tests
         {
             if (inputNumber < 0)
             {
-                return Faults.Invalid(nameof(inputNumber) , inputNumber);
+                return Faults.Invalid(nameof(inputNumber), inputNumber);
             }
 
             return $"positivo:{inputNumber}";
@@ -141,6 +141,6 @@ namespace Resolute.Tests
 
         private static string FormatNumber(int number) => $"N[{number}]";
 
-        private static bool ValidateNumber( int number) => number >= 5;
+        private static bool ValidateNumber(int number) => number >= 5;
     }
 }

@@ -31,10 +31,11 @@ namespace Resolute.Results
         /// <param name="isSuccess">Indica si la operación fue exitosa.</param>
         /// <param name="value">El valor producido por la operación.</param>
         /// <param name="fault">El error producido por la operación.</param>
-        private Result(bool isSuccess, T? value ,  IFault? fault = null) {
+        private Result(bool isSuccess, T? value, IFault? fault = null)
+        {
             IsSuccess = isSuccess;
             Value = value;
-            Fault = fault;  
+            Fault = fault;
         }
 
         /// <summary>
@@ -45,15 +46,15 @@ namespace Resolute.Results
         /// <exception cref="InvalidResultException">Lanza una excepción si el valor es nulo.</exception>
         public static Result<T> Success(T value)
         {
-            if (value is null )
+            if (value is null)
             {
                 throw new InvalidResultException(
-                    resultState: typeof(T).Name ,
+                    resultState: typeof(T).Name,
                     operation: nameof(Success),
                     message: $"Cannot create a successful Result<{typeof(T).Name}> with a null value."
                 );
             }
-                return new Result<T>(true, value);
+            return new Result<T>(true, value);
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Resolute.Results
         /// <param name="onSuccess">La función para manejar el caso de éxito.</param>
         /// <param name="onFailure">La función para manejar el caso de fallo.</param>
         /// <returns></returns>
-        public TResult Match <TResult>(Func<T, TResult> onSuccess , Func<IFault, TResult> onFailure) 
+        public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<IFault, TResult> onFailure)
         {
             if (IsFailure)
             {

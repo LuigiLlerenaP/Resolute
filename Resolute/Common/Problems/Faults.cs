@@ -46,7 +46,7 @@ namespace Resolute.Common.Problems
         /// <summary>
         /// Creates a fault indicating a value is outside the allowed range.
         /// </summary>
-        public static Fault OutOfRange<T>(string propertyName, T value , int min, int max)
+        public static Fault OutOfRange<T>(string propertyName, T value, int min, int max)
             => new(string.Format(FaultCodes.OutOfRange, propertyName),
                    string.Format(FaultMessages.OutOfRange, value, min, max));
 

@@ -170,7 +170,7 @@ namespace Resolute.Results
             }
 
             if (faults is not null)
-                return Result<IReadOnlyList<T>>.Failure(AggregateFault.From(faults));  
+                return Result<IReadOnlyList<T>>.Failure(AggregateFault.From(faults));
 
             return (values ?? []).AsReadOnly();
         }
